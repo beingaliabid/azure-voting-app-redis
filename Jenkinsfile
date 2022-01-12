@@ -9,7 +9,7 @@ pipeline {
         }
         stage('Docker Build') {
             steps {
-                sh 'docker images'
+                sh "ssh noetic@192.168.126.199 '(cd /home;pwd;docker ps;)'"
             }
         }
     }
