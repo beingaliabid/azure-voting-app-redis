@@ -8,25 +8,10 @@ pipeline {
          }
       }
       stage('Docker Build') {
-         steps {
-            pwsh(script: 'docker images -a')
-            pwsh(script: """
-               cd azure-vote/
-               docker images -a
-               docker build -t jenkins-pipeline .
-               docker images -a
-               cd ..
-            """)
-         }
-      }
-      stage('Start test app') {
-         steps {
-            pwsh(script: """
-               docker-compose up -d
-               ./scripts/test_container.ps1
-            """)
-         }
-         post {
+            steps {
+                sh "ssh noetic@192.168.126.199 '(cd /home;pwd;docker ps;cd /home/noetic/apps/gamification;  docker build -t gamify_img .; docker ps)'"
+            }
+          post {
             success {
                echo "App started successfully :)"
             }
@@ -34,20 +19,29 @@ pipeline {
                echo "App failed to start :("
             }
          }
-      }
-      stage('Run Tests') {
-         steps {
-            pwsh(script: """
-               pytest ./tests/test_sample.py
-            """)
-         }
-      }
-      stage('Stop test app') {
-         steps {
-            pwsh(script: """
-               docker-compose down
-            """)
-         }
-      }
+        }
+     // stage('Start test app') {
+       //  steps {
+         //   pwsh(script: """
+           //    docker-compose up -d
+            //   ./scripts/test_container.ps1
+           // """)
+        // }
+         
+      //}
+     // stage('Run Tests') {
+       //  steps {
+         //   pwsh(script: """
+           //    pytest ./tests/test_sample.py
+           // """)
+        // }
+     // }
+     // stage('Stop test app') {
+     //    steps {
+     //       pwsh(script: """
+     //          docker-compose down
+     //       """)
+        // }
+     // }
    }
 }
